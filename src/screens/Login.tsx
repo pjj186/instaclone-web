@@ -1,12 +1,10 @@
-interface ILoginProps {
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { isLoggedInVar } from "./apollo";
 
-const Login = ({ setIsLoggedIn }: ILoginProps) => {
+const Login = () => {
   return (
     <div>
       <h1>Login</h1>
-      <button onClick={() => setIsLoggedIn(true)}>Log in now!</button>
+      <button onClick={() => isLoggedInVar(true)}>Log in now!</button>
     </div>
   );
 };
