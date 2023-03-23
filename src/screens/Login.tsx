@@ -106,7 +106,7 @@ const FacebookLogin = styled.div`
 const Login = () => {
   return (
     <Container>
-      <div>
+      <Wrapper>
         <TopBox>
           <div>
             <FontAwesomeIcon icon={faInstagram} size="3x" />
@@ -129,7 +129,7 @@ const Login = () => {
         <BottomBox>
           <span>Don't have an account?</span> <a href="#">Sign up</a>
         </BottomBox>
-      </div>
+      </Wrapper>
     </Container>
   );
 };
