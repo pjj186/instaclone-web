@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components";
 import { BaseBox } from "../shared";
 import { Link } from "react-router-dom";
