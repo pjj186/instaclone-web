@@ -5,7 +5,11 @@ interface IPageTitleProps {
 }
 
 const PageTitle = (props: IPageTitleProps) => {
-  return <Helmet>{props.title} | Instaclone</Helmet>;
+  return (
+    <Helmet>
+      <title>{props.title} | Instaclone</title>
+    </Helmet>
+  );
 };
 
 export default PageTitle;
