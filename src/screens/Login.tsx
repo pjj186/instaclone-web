@@ -13,6 +13,7 @@ import Separator from '../components/auth/Separator';
 import PageTitle from '../components/PageTitle';
 import routes from '../routes';
 import { useForm } from 'react-hook-form';
+import FormError from '../components/auth/FormError';
 
 interface FormData {
   username: string;
@@ -28,14 +29,16 @@ const FacebookLogin = styled.div`
 `;
 
 const Login = () => {
-  const { register, watch, handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    mode: 'onChange',
+  });
 
   const onSubmitValid = (data: FormData) => {
     console.log(data);
-  };
-
-  const onSubmitInvalid = (data: any) => {
-    console.log(data, 'invalid');
   };
 
   return (
@@ -45,23 +48,30 @@ const Login = () => {
         <div>
           <FontAwesomeIcon icon={faInstagram} size="3x" />
         </div>
-        <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
+        <form onSubmit={handleSubmit(onSubmitValid)}>
           <Input
             {...register('username', {
               required: 'Username is required',
-              minLength: 5,
+              minLength: {
+                value: 5,
+                message: '최소 길이는 5글자입니다.',
+              },
             })}
             type="text"
             placeholder="Username"
+            hasError={Boolean(errors?.username?.message!)}
           />
+          <FormError message={errors?.username?.message!} />
           <Input
             {...register('password', {
               required: 'Password is required',
             })}
             type="password"
             placeholder="Password"
+            hasError={Boolean(errors?.password?.message!)}
           />
-          <Button type="submit" value="Log in" />
+          <FormError message={errors?.password?.message!} />
+          <Button type="submit" value="Log in" disabled={!isValid} />
         </form>
         <Separator />
         <FacebookLogin>
