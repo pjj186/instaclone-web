@@ -1,15 +1,15 @@
-import { faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styled from "styled-components";
-import AuthLayout from "../components/auth/AuthLayout";
-import BottomBox from "../components/auth/BottomBox";
-import Button from "../components/auth/Button";
-import FormBox from "../components/auth/FormBox";
-import Input from "../components/auth/Input";
-import Separator from "../components/auth/Separator";
-import PageTitle from "../components/PageTitle";
-import { FatLink } from "../components/shared";
-import routes from "../routes";
+import { faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styled from 'styled-components';
+import AuthLayout from '../components/auth/AuthLayout';
+import BottomBox from '../components/auth/BottomBox';
+import Button from '../components/auth/Button';
+import FormBox from '../components/auth/FormBox';
+import Input from '../components/auth/Input';
+import Separator from '../components/auth/Separator';
+import PageTitle from '../components/PageTitle';
+import { FatLink } from '../components/shared';
+import routes from '../routes';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -44,8 +44,8 @@ const SignUp = () => {
       </FormBox>
       <BottomBox
         callToAction="Have an account?"
-        link={routes.signUp}
-        linkText="Sign up"
+        link={routes.home}
+        linkText="Log in"
       />
     </AuthLayout>
   );
