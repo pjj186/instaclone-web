@@ -15,6 +15,7 @@ import routes from '../routes';
 import { useForm } from 'react-hook-form';
 import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
+import { logUserIn } from '../apollo';
 
 interface FormData {
   username: string;
@@ -55,6 +56,7 @@ const Login = () => {
     formState: { errors, isValid },
     getValues,
     setError,
+    clearErrors,
   } = useForm<FormData>({
     mode: 'onChange',
   });
@@ -67,6 +69,9 @@ const Login = () => {
       setError('result', {
         message: error,
       });
+    }
+    if (token) {
+      logUserIn(token);
     }
   };
 
@@ -87,6 +92,10 @@ const Login = () => {
     });
   };
 
+  const clearLoginError = () => {
+    clearErrors('result');
+  };
+
   return (
     <AuthLayout>
       <PageTitle title="Login" />
@@ -103,6 +112,7 @@ const Login = () => {
                 message: '최소 길이는 5글자입니다.',
               },
             })}
+            onFocus={clearLoginError}
             type="text"
             placeholder="Username"
             hasError={Boolean(errors?.username?.message!)}
