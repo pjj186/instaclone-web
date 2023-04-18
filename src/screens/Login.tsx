@@ -17,7 +17,7 @@ import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
 import { logUserIn } from '../apollo';
 
-interface FormData {
+interface ILoginFormData {
   username: string;
   password: string;
   result: string;
@@ -57,7 +57,7 @@ const Login = () => {
     getValues,
     setError,
     clearErrors,
-  } = useForm<FormData>({
+  } = useForm<ILoginFormData>({
     mode: 'onChange',
   });
 
@@ -79,7 +79,7 @@ const Login = () => {
     onCompleted,
   });
 
-  const onSubmitValid = (data: FormData) => {
+  const onSubmitValid = () => {
     if (loading) {
       return;
     }
