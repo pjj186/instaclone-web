@@ -134,6 +134,10 @@ const SignUp = () => {
           <Input
             {...register('username', {
               required: 'Username is required.',
+              minLength: {
+                value: 5,
+                message: '최소 길이는 5글자입니다.',
+              },
             })}
             type="text"
             placeholder="Username"
