@@ -66,6 +66,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
 const SignUp = () => {
   const history = useHistory();
   const onCompleted = (data: ICreateAccountResult) => {
+    const { username, password } = getValues();
     const {
       createAccount: { ok, error },
     } = data;
@@ -75,7 +76,11 @@ const SignUp = () => {
       });
       return;
     }
-    history.push(routes.home);
+    history.push(routes.home, {
+      message: 'Account created. Please log in.',
+      username,
+      password,
+    });
   };
   const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
     onCompleted,
@@ -86,6 +91,7 @@ const SignUp = () => {
     handleSubmit,
     setError,
     formState: { errors, isValid },
+    getValues,
   } = useForm<ISignUpFormData>({
     mode: 'onChange',
   });
