@@ -13,4 +13,5 @@ export const FatLink = styled.span`
 
 export const FatText = styled.span`
   font-weight: 600;
+  color: black;
 `;
