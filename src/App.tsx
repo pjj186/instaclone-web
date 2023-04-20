@@ -9,7 +9,6 @@ import Login from './screens/Login';
 import NotFound from './screens/NotFound';
 import SignUp from './screens/SignUp';
 import { darkTheme, GlobalStyles, lightTheme } from './styles';
-import Header from './components/Header';
 import Layout from './components/Layout';
 
 function App() {

@@ -1,5 +1,7 @@
 import { gql, useQuery, useReactiveVar } from '@apollo/client';
-import { isLoggedInVar } from '../apollo';
+import { isLoggedInVar, logUserOut } from '../apollo';
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const ME_QUERY = gql`
   query me {
@@ -11,11 +13,21 @@ const ME_QUERY = gql`
 `;
 
 const useUser = () => {
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
-  const { data, error } = useQuery(ME_QUERY, {
-    skip: !isLoggedIn,
+  const histroy = useHistory();
+  const hasToken = useReactiveVar(isLoggedInVar);
+
+  const { data, error, loading } = useQuery(ME_QUERY, {
+    skip: !hasToken,
   });
-  console.log(data, error);
+
+  console.log(data);
+
+  useEffect(() => {
+    if (data?.me === null) {
+      logUserOut(histroy);
+    }
+  }, [data, loading]);
+
   return;
 };
 
