@@ -16,6 +16,7 @@ import {
   gql,
   useMutation,
 } from '@apollo/client';
+
 interface IPhotoProps {
   photo: {
     caption: string;
@@ -33,14 +34,10 @@ interface IPhotoProps {
   };
 }
 
-const TOGGLE_LIKE_MUTATION = gql`
-  mutation toggleLike($id: Int!) {
-    toggleLike(id: $id) {
-      ok
-      error
-    }
-  }
-`;
+interface LikesData {
+  isLikes: boolean;
+  likes: number;
+}
 
 const PhotoContainer = styled.div`
   background-color: white;
@@ -96,6 +93,15 @@ const Likes = styled(FatText)`
   display: block;
 `;
 
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
+
 const Photo = (props: IPhotoProps) => {
   const updateToggleLike = (
     cache: ApolloCache<NormalizedCacheObject>,
@@ -107,17 +113,31 @@ const Photo = (props: IPhotoProps) => {
       },
     } = result;
     if (ok) {
-      cache.writeFragment({
-        id: `Photo:${props.photo.id}`,
-        fragment: gql`
-          fragment isLikedFrag on Photo {
-            isLiked
-          }
-        `,
-        data: {
-          isLiked: !props.photo.isLiked,
-        },
+      const fragmentId = `Photo:${props.photo.id}`;
+      const fragment = gql`
+        fragment LikeFrag on Photo {
+          isLiked
+          likes
+        }
+      `;
+      const result: LikesData | null = cache.readFragment({
+        id: fragmentId,
+        fragment,
       });
+
+      if (result !== null) {
+        if ('isLiked' in result && 'likes' in result) {
+          const { isLiked: cacheIsLiked, likes: cacheLikes } = result;
+          cache.writeFragment({
+            id: fragmentId,
+            fragment,
+            data: {
+              isLiked: !cacheIsLiked,
+              likes: cacheIsLiked ? cacheLikes - 1 : cacheLikes + 1,
+            },
+          });
+        }
+      }
     }
   };
   const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
