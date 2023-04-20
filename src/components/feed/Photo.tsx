@@ -10,8 +10,12 @@ import {
   faPaperPlane,
 } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as SolidHeart } from '@fortawesome/free-solid-svg-icons';
-import { gql, useMutation } from '@apollo/client';
-
+import {
+  ApolloCache,
+  NormalizedCacheObject,
+  gql,
+  useMutation,
+} from '@apollo/client';
 interface IPhotoProps {
   photo: {
     caption: string;
@@ -93,10 +97,34 @@ const Likes = styled(FatText)`
 `;
 
 const Photo = (props: IPhotoProps) => {
-  const [toggleLikeMutation, { loading }] = useMutation(TOGGLE_LIKE_MUTATION, {
+  const updateToggleLike = (
+    cache: ApolloCache<NormalizedCacheObject>,
+    result: any,
+  ) => {
+    const {
+      data: {
+        toggleLike: { ok },
+      },
+    } = result;
+    if (ok) {
+      cache.writeFragment({
+        id: `Photo:${props.photo.id}`,
+        fragment: gql`
+          fragment isLikedFrag on Photo {
+            isLiked
+          }
+        `,
+        data: {
+          isLiked: !props.photo.isLiked,
+        },
+      });
+    }
+  };
+  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
     variables: {
       id: props.photo.id,
     },
+    update: updateToggleLike,
   });
   return (
     <PhotoContainer key={props.photo.id}>
