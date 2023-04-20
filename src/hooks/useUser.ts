@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 const ME_QUERY = gql`
   query me {
     me {
+      id
       username
       avatar
     }
@@ -20,15 +21,13 @@ const useUser = () => {
     skip: !hasToken,
   });
 
-  console.log(data);
-
   useEffect(() => {
     if (data?.me === null) {
       logUserOut(histroy);
     }
   }, [data, loading]);
 
-  return;
+  return { data };
 };
 
 export default useUser;
