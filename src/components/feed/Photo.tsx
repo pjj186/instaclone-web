@@ -20,7 +20,10 @@ import {
 interface IPhotoProps {
   photo: {
     caption: string;
-    comments: number;
+    commentNumber: number;
+    comments: {
+      payload: string;
+    }[];
     createdAt: string;
     file: string;
     id: number;
@@ -91,6 +94,24 @@ const PhotoAction = styled.div`
 const Likes = styled(FatText)`
   margin-top: 10px;
   display: block;
+`;
+
+const Comments = styled.div`
+  margin-top: 20px;
+`;
+const Comment = styled.div``;
+const CommentCaption = styled.span`
+  margin-left: 10px;
+  color: black;
+`;
+
+const CommentCount = styled.span`
+  opacity: 0.7;
+  font-size: 12px;
+  margin: 10px 0px;
+  color: black;
+  display: block;
+  font-weight: 600;
 `;
 
 const TOGGLE_LIKE_MUTATION = gql`
@@ -184,6 +205,17 @@ const Photo = (props: IPhotoProps) => {
         <Likes>
           {props.photo.likes === 1 ? '1 like' : `${props.photo.likes} likes`}
         </Likes>
+        <Comments>
+          <Comment>
+            <FatText>{props.photo.user.username}</FatText>
+            <CommentCaption>{props.photo.caption}</CommentCaption>
+          </Comment>
+          <CommentCount>
+            {props.photo.commentNumber === 1
+              ? '1 comment'
+              : `${props.photo.commentNumber} comments`}
+          </CommentCount>
+        </Comments>
       </PhotoData>
     </PhotoContainer>
   );
