@@ -16,13 +16,21 @@ import {
   gql,
   useMutation,
 } from '@apollo/client';
+import Comments from './Comments';
 
 interface IPhotoProps {
   photo: {
     caption: string;
     commentNumber: number;
     comments: {
+      id: number;
+      user: {
+        username: string;
+        avatar: string;
+      };
       payload: string;
+      isMine: boolean;
+      createdAt: string;
     }[];
     createdAt: string;
     file: string;
@@ -94,24 +102,6 @@ const PhotoAction = styled.div`
 const Likes = styled(FatText)`
   margin-top: 10px;
   display: block;
-`;
-
-const Comments = styled.div`
-  margin-top: 20px;
-`;
-const Comment = styled.div``;
-const CommentCaption = styled.span`
-  margin-left: 10px;
-  color: black;
-`;
-
-const CommentCount = styled.span`
-  opacity: 0.7;
-  font-size: 12px;
-  margin: 10px 0px;
-  color: black;
-  display: block;
-  font-weight: 600;
 `;
 
 const TOGGLE_LIKE_MUTATION = gql`
@@ -205,17 +195,12 @@ const Photo = (props: IPhotoProps) => {
         <Likes>
           {props.photo.likes === 1 ? '1 like' : `${props.photo.likes} likes`}
         </Likes>
-        <Comments>
-          <Comment>
-            <FatText>{props.photo.user.username}</FatText>
-            <CommentCaption>{props.photo.caption}</CommentCaption>
-          </Comment>
-          <CommentCount>
-            {props.photo.commentNumber === 1
-              ? '1 comment'
-              : `${props.photo.commentNumber} comments`}
-          </CommentCount>
-        </Comments>
+        <Comments
+          author={props.photo.user.username}
+          caption={props.photo.caption}
+          commentNumber={props.photo.commentNumber}
+          comments={props.photo.comments}
+        />
       </PhotoData>
     </PhotoContainer>
   );
