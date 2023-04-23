@@ -1,7 +1,7 @@
 import React from 'react';
 import { FatText } from '../shared';
 import styled from 'styled-components';
-import sanitizeHtml from 'sanitize-html';
+import { Link } from 'react-router-dom';
 
 interface ICommentProps {
   author: string;
@@ -13,7 +13,7 @@ const CommentContainer = styled.div``;
 const CommentCaption = styled.span`
   margin-left: 10px;
   color: black;
-  mark {
+  a {
     background-color: inherit;
     color: ${(props) => props.theme.accent};
     cursor: pointer;
@@ -24,20 +24,20 @@ const CommentCaption = styled.span`
 `;
 
 const Comment = (props: ICommentProps) => {
-  const cleanedPayload = sanitizeHtml(
-    props.payload.replace(/#[\w]+/g, '<mark>$&</mark>'),
-    {
-      allowedTags: ['mark'],
-    },
-  );
   return (
     <CommentContainer>
       <FatText>{props.author}</FatText>
-      <CommentCaption
-        dangerouslySetInnerHTML={{
-          __html: cleanedPayload,
-        }}
-      />
+      <CommentCaption>
+        {props.payload.split(' ').map((word, index) =>
+          /#[\w]+/.test(word) ? (
+            <React.Fragment key={index}>
+              <Link to={`hashtags/${word}`}>{word}</Link>{' '}
+            </React.Fragment>
+          ) : (
+            <React.Fragment key={index}>{word} </React.Fragment>
+          ),
+        )}
+      </CommentCaption>
     </CommentContainer>
   );
 };
