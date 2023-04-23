@@ -125,30 +125,21 @@ const Photo = (props: IPhotoProps) => {
     } = result;
     if (ok) {
       const fragmentId = `Photo:${props.photo.id}`;
-      const fragment = gql`
-        fragment LikeFrag on Photo {
-          isLiked
-          likes
-        }
-      `;
-      const result: LikesData | null = cache.readFragment({
+      cache.modify({
         id: fragmentId,
-        fragment,
+        fields: {
+          isLiked(prev) {
+            return !prev;
+          },
+          likes(prev) {
+            if (props.photo.isLiked) {
+              return prev - 1;
+            } else {
+              return prev + 1;
+            }
+          },
+        },
       });
-
-      if (result !== null) {
-        if ('isLiked' in result && 'likes' in result) {
-          const { isLiked: cacheIsLiked, likes: cacheLikes } = result;
-          cache.writeFragment({
-            id: fragmentId,
-            fragment,
-            data: {
-              isLiked: !cacheIsLiked,
-              likes: cacheIsLiked ? cacheLikes - 1 : cacheLikes + 1,
-            },
-          });
-        }
-      }
     }
   };
   const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
