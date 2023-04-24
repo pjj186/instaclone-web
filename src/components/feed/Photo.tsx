@@ -187,6 +187,7 @@ const Photo = (props: IPhotoProps) => {
           {props.photo.likes === 1 ? '1 like' : `${props.photo.likes} likes`}
         </Likes>
         <Comments
+          photoId={props.photo.id}
           author={props.photo.user.username}
           caption={props.photo.caption}
           commentNumber={props.photo.commentNumber}

@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import Comment from './Comment';
+import { useForm } from 'react-hook-form';
+import { gql, useMutation } from '@apollo/client';
 
 interface ICommentsProps {
+  photoId: number;
   author: string;
   caption: string;
   commentNumber: number;
@@ -18,6 +21,10 @@ interface ICommentsProps {
   }[];
 }
 
+interface ICommentForm {
+  payload: string;
+}
+
 const CommentsContainer = styled.div`
   margin-top: 20px;
 `;
@@ -31,7 +38,34 @@ const CommentCount = styled.span`
   font-weight: 600;
 `;
 
+const CREATE_COMMENT_MUTATION = gql`
+  mutation createComment($photoId: Int!, $payload: String!) {
+    createComment(photoId: $photoId, payload: $payload) {
+      ok
+      error
+    }
+  }
+`;
+
 const Comments = (props: ICommentsProps) => {
+  const [createCommentMutation, { loading }] = useMutation(
+    CREATE_COMMENT_MUTATION,
+  );
+
+  const { register, handleSubmit, setValue } = useForm<ICommentForm>();
+  const onValid = (data: ICommentForm) => {
+    const { payload } = data;
+    if (loading) {
+      return;
+    }
+    createCommentMutation({
+      variables: {
+        photoId: props.photoId,
+        payload,
+      },
+    });
+    setValue('payload', '');
+  };
   return (
     <CommentsContainer>
       <Comment author={props.author} payload={props.caption} />
@@ -47,6 +81,20 @@ const Comments = (props: ICommentsProps) => {
           payload={comment.payload}
         />
       ))}
+      <div>
+        <form onSubmit={handleSubmit(onValid)}>
+          <input
+            {...register('payload', {
+              required: true,
+            })}
+            style={{
+              color: 'black',
+            }}
+            type="text"
+            placeholder="Write a comment..."
+          />
+        </form>
+      </div>
     </CommentsContainer>
   );
 };
