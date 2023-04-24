@@ -45,11 +45,6 @@ interface IPhotoProps {
   };
 }
 
-interface LikesData {
-  isLikes: boolean;
-  likes: number;
-}
-
 const PhotoContainer = styled.div`
   background-color: white;
   border: 1px solid ${(props) => props.theme.borderColor};
