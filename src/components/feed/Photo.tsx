@@ -147,10 +147,10 @@ const Photo = (props: IPhotoProps) => {
   return (
     <PhotoContainer key={props.photo.id}>
       <PhotoHeader>
-        <Link to={`/users/${props.photo.user.username}`}>
+        <Link to={`/users/${props?.photo?.user.username}`}>
           <Avatar url={props.photo.user.avatar} lg />
         </Link>
-        <Link to={`/users/${props.photo.user.username}`}>
+        <Link to={`/users/${props?.photo?.user.username}`}>
           <Username>{props.photo.user.username}</Username>
         </Link>
       </PhotoHeader>

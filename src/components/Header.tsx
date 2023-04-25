@@ -1,6 +1,5 @@
 import { useReactiveVar } from '@apollo/client';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faCompass, faHome } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -50,7 +49,9 @@ const IconsContainer = styled.div`
 
 const Header = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
+
   const { data } = useUser();
+
   return (
     <SHeader>
       <Wrapper>
