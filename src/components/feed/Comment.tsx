@@ -79,7 +79,9 @@ const Comment = (props: ICommentProps) => {
 
   return (
     <CommentContainer>
-      <FatText>{props.author}</FatText>
+      <Link to={`/users/${props.author}`}>
+        <FatText>{props.author}</FatText>
+      </Link>
       <CommentCaption>
         {props.payload.split(' ').map((word, index) =>
           /#[\w]+/.test(word) ? (

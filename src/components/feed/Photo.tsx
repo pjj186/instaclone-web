@@ -17,6 +17,7 @@ import {
   useMutation,
 } from '@apollo/client';
 import Comments from './Comments';
+import { Link } from 'react-router-dom';
 
 interface IPhotoProps {
   photo: {
@@ -146,8 +147,12 @@ const Photo = (props: IPhotoProps) => {
   return (
     <PhotoContainer key={props.photo.id}>
       <PhotoHeader>
-        <Avatar url={props.photo.user.avatar} lg />
-        <Username>{props.photo.user.username}</Username>
+        <Link to={`/users/${props.photo.user.username}`}>
+          <Avatar url={props.photo.user.avatar} lg />
+        </Link>
+        <Link to={`/users/${props.photo.user.username}`}>
+          <Username>{props.photo.user.username}</Username>
+        </Link>
       </PhotoHeader>
       <PhotoFile src={props.photo.file} />
       <PhotoData>
