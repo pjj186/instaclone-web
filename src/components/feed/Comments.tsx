@@ -154,8 +154,11 @@ const Comments = (props: ICommentsProps) => {
       {props.comments?.map((comment) => (
         <Comment
           key={comment.id}
+          id={comment.id}
+          isMine={comment.isMine}
           author={comment.user.username}
           payload={comment.payload}
+          photoId={props.photoId}
         />
       ))}
       <PostCommentContainer>
