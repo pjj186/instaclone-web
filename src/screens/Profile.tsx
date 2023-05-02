@@ -5,9 +5,34 @@ import styled from 'styled-components';
 import { FatText } from '../components/shared';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faHeart } from '@fortawesome/free-solid-svg-icons';
+import Button from '../components/auth/Button';
+import PageTitle from '../components/PageTitle';
 
 interface IProfileParams {
   username: string;
+}
+
+interface IProfileResponse {
+  seeProfile: {
+    avatar: string;
+    bio: string;
+    firstName: string;
+    isFollowing: boolean;
+    isMe: boolean;
+    lastName: string;
+    photos: {
+      commentNumber: number;
+      file: string;
+      id: number;
+      isLiked: boolean;
+      likes: number;
+      __typename: string;
+    }[];
+    totalFollowers: number;
+    totalFollowing: number;
+    username: string;
+    __typename: string;
+  };
 }
 
 const Header = styled.div`
@@ -29,6 +54,7 @@ const Username = styled.h3`
 const Row = styled.div`
   margin-bottom: 20px;
   font-size: 16px;
+  display: flex;
 `;
 const List = styled.ul`
   display: flex;
@@ -85,6 +111,13 @@ const Icon = styled.span`
   }
 `;
 
+const ProfileBtn = styled(Button.type).attrs({
+  as: 'span',
+})`
+  margin-left: 10px;
+  margin-top: 0px;
+`;
+
 const SEE_PROFILE_QUERY = gql`
   query seeProfile($username: String!) {
     seeProfile(username: $username) {
@@ -105,21 +138,55 @@ const SEE_PROFILE_QUERY = gql`
   ${PHOTO_FRAGMENT}
 `;
 
+const FOLLOW_USER_MUTATION = gql`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      ok
+    }
+  }
+`;
+
+const UNFOLLOW_USER_MUTATION = gql`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
+      ok
+    }
+  }
+`;
+
 const Profile = () => {
   const { username } = useParams<IProfileParams>();
-  const { data } = useQuery(SEE_PROFILE_QUERY, {
+  const { data, loading } = useQuery<IProfileResponse>(SEE_PROFILE_QUERY, {
     variables: {
       username,
     },
   });
 
+  const getButton = ({ seeProfile }: IProfileResponse) => {
+    const { isMe, isFollowing } = seeProfile;
+    if (isMe) {
+      return <ProfileBtn>Edit Profile</ProfileBtn>;
+    }
+    if (isFollowing) {
+      return <ProfileBtn>Unfollow</ProfileBtn>;
+    } else {
+      return <ProfileBtn>Follow</ProfileBtn>;
+    }
+  };
+
   return (
     <div>
+      <PageTitle
+        title={
+          loading ? 'Loading...' : `${data?.seeProfile?.username}'s Profile`
+        }
+      />
       <Header>
         <Avatar src={data?.seeProfile?.avatar} />
         <Column>
           <Row>
             <Username>{data?.seeProfile?.username}</Username>
+            {data?.seeProfile ? getButton(data) : null}
           </Row>
           <Row>
             <List>
@@ -147,7 +214,7 @@ const Profile = () => {
       </Header>
       <Grid>
         {data?.seeProfile?.photos.map((photo: any) => (
-          <Photo bg={photo.file}>
+          <Photo bg={photo.file} key={photo.id}>
             <Icons>
               <Icon>
                 <FontAwesomeIcon icon={faHeart} />
