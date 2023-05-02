@@ -3,12 +3,14 @@ import { isLoggedInVar, logUserOut } from '../apollo';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const ME_QUERY = gql`
+export const ME_QUERY = gql`
   query me {
     me {
       id
       username
       avatar
+      totalFollowing
+      totalFollowers
     }
   }
 `;

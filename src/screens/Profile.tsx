@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { PHOTO_FRAGMENT } from '../fragments';
 import styled from 'styled-components';
@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faHeart } from '@fortawesome/free-solid-svg-icons';
 import Button from '../components/auth/Button';
 import PageTitle from '../components/PageTitle';
+import useUser, { ME_QUERY } from '../hooks/useUser';
 
 interface IProfileParams {
   username: string;
@@ -116,6 +117,7 @@ const ProfileBtn = styled(Button.type).attrs({
 })`
   margin-left: 10px;
   margin-top: 0px;
+  cursor: pointer;
 `;
 
 const SEE_PROFILE_QUERY = gql`
@@ -156,10 +158,45 @@ const UNFOLLOW_USER_MUTATION = gql`
 
 const Profile = () => {
   const { username } = useParams<IProfileParams>();
+  const { data: userData } = useUser();
   const { data, loading } = useQuery<IProfileResponse>(SEE_PROFILE_QUERY, {
     variables: {
       username,
     },
+  });
+
+  const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
+    variables: {
+      username,
+    },
+    refetchQueries: [
+      {
+        query: SEE_PROFILE_QUERY,
+        variables: {
+          username,
+        },
+      },
+      {
+        query: ME_QUERY,
+      },
+    ],
+  });
+
+  const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
+    variables: {
+      username,
+    },
+    refetchQueries: [
+      {
+        query: SEE_PROFILE_QUERY,
+        variables: {
+          username,
+        },
+      },
+      {
+        query: ME_QUERY,
+      },
+    ],
   });
 
   const getButton = ({ seeProfile }: IProfileResponse) => {
@@ -168,9 +205,25 @@ const Profile = () => {
       return <ProfileBtn>Edit Profile</ProfileBtn>;
     }
     if (isFollowing) {
-      return <ProfileBtn>Unfollow</ProfileBtn>;
+      return (
+        <ProfileBtn
+          onClick={() => {
+            unfollowUser();
+          }}
+        >
+          Unfollow
+        </ProfileBtn>
+      );
     } else {
-      return <ProfileBtn>Follow</ProfileBtn>;
+      return (
+        <ProfileBtn
+          onClick={() => {
+            followUser();
+          }}
+        >
+          Follow
+        </ProfileBtn>
+      );
     }
   };
 
